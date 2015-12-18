@@ -47,7 +47,6 @@ try:
 except ImportError:
     import simplejson as json
 
-import ssl
 from functools import wraps
 def sslwrap(func):
     @wraps(func)
