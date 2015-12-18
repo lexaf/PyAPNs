@@ -47,6 +47,18 @@ try:
 except ImportError:
     import simplejson as json
 
+import ssl
+from functools import wraps
+def sslwrap(func):
+    @wraps(func)
+    def bar(*args, **kw):
+        kw['ssl_version'] = ssl.PROTOCOL_TLSv1
+        return func(*args, **kw)
+    return bar
+
+wrap_socket = sslwrap(wrap_socket)
+
+
 _logger = logging.getLogger(__name__)
 
 MAX_PAYLOAD_LENGTH = 2048
@@ -210,7 +222,7 @@ class APNsConnection(object):
             self._last_activity_time = time.time()
             self._socket.setblocking(False)
             self._ssl = wrap_socket(self._socket, self.key_file, self.cert_file,
-                                        do_handshake_on_connect=False, ssl_version=ssl.PROTOCOL_SSLv23)
+                                        do_handshake_on_connect=False)
             while True:
                 try:
                     self._ssl.do_handshake()
@@ -227,7 +239,7 @@ class APNsConnection(object):
             # Fallback for 'SSLError: _ssl.c:489: The handshake operation timed out'
             for i in xrange(3):
                 try:
-                    self._ssl = wrap_socket(self._socket, self.key_file, self.cert_file, ssl_version=ssl.PROTOCOL_SSLv23)
+                    self._ssl = wrap_socket(self._socket, self.key_file, self.cert_file)
                     break
                 except SSLError, ex:
                     if ex.args[0] == SSL_ERROR_WANT_READ:
