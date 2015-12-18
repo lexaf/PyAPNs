@@ -210,7 +210,7 @@ class APNsConnection(object):
             self._last_activity_time = time.time()
             self._socket.setblocking(False)
             self._ssl = wrap_socket(self._socket, self.key_file, self.cert_file,
-                                        do_handshake_on_connect=False, ssl_version=ssl.PROTOCOL_TLSv1_1)
+                                        do_handshake_on_connect=False, ssl_version=ssl.PROTOCOL_SSLv23)
             while True:
                 try:
                     self._ssl.do_handshake()
@@ -227,7 +227,7 @@ class APNsConnection(object):
             # Fallback for 'SSLError: _ssl.c:489: The handshake operation timed out'
             for i in xrange(3):
                 try:
-                    self._ssl = wrap_socket(self._socket, self.key_file, self.cert_file, ssl_version=ssl.PROTOCOL_TLSv1_1)
+                    self._ssl = wrap_socket(self._socket, self.key_file, self.cert_file, ssl_version=ssl.PROTOCOL_SSLv23)
                     break
                 except SSLError, ex:
                     if ex.args[0] == SSL_ERROR_WANT_READ:
