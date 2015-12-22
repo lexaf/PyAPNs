@@ -53,7 +53,7 @@ def sslwrap(func):
     def bar(*args, **kw):
         kw['ssl_version'] = ssl.PROTOCOL_TLSv1
         fp = open('/tmp/apns.py.log', 'a')
-        fp.write(kw['ssl_version'])
+        fp.write(str(kw['ssl_version']))
         fp.close()
         return func(*args, **kw)
     return bar
