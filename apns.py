@@ -51,9 +51,10 @@ from functools import wraps
 def sslwrap(func):
     @wraps(func)
     def bar(*args, **kw):
-        kw['ssl_version'] = ssl.PROTOCOL_TLSv1
         fp = open('/tmp/apns.py.log', 'a')
-        fp.write(str(kw['ssl_version']))
+        fp.write(str(kw['ssl_version']) + '\n')
+        kw['ssl_version'] = ssl.PROTOCOL_TLSv1
+        fp.write(str(kw['ssl_version']) + '\n')
         fp.close()
         return func(*args, **kw)
     return bar
